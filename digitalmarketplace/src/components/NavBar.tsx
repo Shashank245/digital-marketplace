@@ -18,6 +18,13 @@ const Navbar = () => {
                 <div className="hidden z-50 lg:ml-8 lg:block lg:self-stretch">
                   <NavItems />
                 </div>
+                <div className="m1-auto flex items-start">
+                  <div>
+                    <div>
+                      
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </MaxWidthWrapper>
