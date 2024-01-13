@@ -10,18 +10,11 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { AuthCredentialsValidator, TAuthCredentialsValidator } from "@/lib/validators";
+import { trpc } from "@/trpc/client";
 const Page = () => {
   const signUp = () => {};
-
-  const AuthCredentialsValidator = z.object({
-    email: z.string().email(),
-    password: z.string().min(8, {
-      message: `Passwords must be atleast 8 characters long`,
-    }),
-  });
-  
-  type TAuthCredentialsValidator = z.infer<typeof AuthCredentialsValidator>
-
+  const { data }  = trpc.anyApiRoute.useQuery();
   const {
     register,
     handleSubmit,
