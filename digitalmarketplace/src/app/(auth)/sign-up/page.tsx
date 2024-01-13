@@ -13,8 +13,9 @@ import { z } from "zod";
 import { AuthCredentialsValidator, TAuthCredentialsValidator } from "@/lib/validators";
 import { trpc } from "@/trpc/client";
 const Page = () => {
-  const signUp = () => {};
-  const { data }  = trpc.anyApiRoute.useQuery();
+  
+  const {mutate, isLoading} = trpc.auth.createPayloadUser.useMutation({})
+  
   const {
     register,
     handleSubmit,
@@ -22,22 +23,29 @@ const Page = () => {
   } = useForm<TAuthCredentialsValidator>({
     resolver: zodResolver(AuthCredentialsValidator),
   });
+
+  const signUp = ({email, password}: TAuthCredentialsValidator) => {
+    mutate({email, password});
+  };
+
   return (
     <>
       <div className="container relative flex pt-20 flex-col items-center justify-center lg:px-0">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm: w-[350 px]">
-          <div className="flex flex-col items-center text-center">
+        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+          <div className="flex flex-col items-center space-y-2 text-center">
             <Icons.logo className="h-20 w-20" />
-            <h1 className="text-2xl font-bold">Create an Account</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Sign in to your account
+            </h1>
 
             <Link
-              href="/sign-in"
               className={buttonVariants({
                 variant: "link",
                 className: "gap-1.5",
               })}
+              href="/sign-up"
             >
-              Already have an account? Sign-in
+              Don&apos;t have an account?
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -49,22 +57,38 @@ const Page = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     {...register("email")}
-                    className={cn({ "focus-visible:ring-red-500": errors.email })}
-                    type="email"
-                    placeholder="Your Email"
+                    className={cn({
+                      "focus-visible:ring-red-500": errors.email,
+                    })}
+                    placeholder="you@example.com"
                   />
+                  {errors?.email && (
+                    <p className="text-sm text-red-500">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="grid gap-1 py-2">
                   <Label htmlFor="password">Password</Label>
                   <Input
                     {...register("password")}
-                    className={cn({ "focus-visible:ring-red-500": errors.password })}
-                    type="email"
-                    placeholder="Your Password"
+                    type="password"
+                    className={cn({
+                      "focus-visible:ring-red-500": errors.password,
+                    })}
+                    placeholder="Password"
                   />
+                  {errors?.password && (
+                    <p className="text-sm text-red-500">
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
-                <Button>Sign Up</Button>
+
+                <Button>
+                  Sign in
+                </Button>
               </div>
             </form>
           </div>
