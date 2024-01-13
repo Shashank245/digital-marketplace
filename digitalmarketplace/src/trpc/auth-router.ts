@@ -1,5 +1,30 @@
-const authRouter = () => {
+import { AuthCredentialsValidator } from "../lib/validators";
+import { publicProcedure, router } from "./trpc";
+import { getPayloadClient } from "../get-payload";
+import { TRPCError } from "@trpc/server";
 
-};
+const authRouter = router({
+  createPayloadUser: publicProcedure
+    .input(AuthCredentialsValidator)
+    .mutation(async ({ input }) => {
+      const { email, password } = input;
+      const payload = await getPayloadClient();
+      const { docs: users } = await payload.find({
+        collection: "users",
+        where: {
+          email: {
+            equals: email,
+          },
+        },
+      });
 
-export default authRouter
+      if (users.length !== 0) throw new TRPCError({ code: "CONFLICT" });
+
+      await payload.create({
+        collection: "users",
+        data: {},
+      });
+    }),
+});
+
+export default authRouter;
