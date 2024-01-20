@@ -1,6 +1,6 @@
 "use client";
 import { trpc } from "@/trpc/client";
-import { XCircle } from "lucide-react";
+import { Loader2, XCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
@@ -37,6 +37,16 @@ const VerifyEmail = ({ token }: VerifyEmailProps) => {
       <Link href="/sign-in" className={buttonVariants({ variant: "ghost" })}>
         Sign in
       </Link>
+    </div>;
+  }
+
+  if (isLoading) {
+    <div className="flex h-full flex-col items-center gap-2">
+      <Loader2 />
+      <h3 className="font-semibold text-2xl">Verifying... </h3>
+      <p className="text-muted-foreground text-center mt-1">
+        This won't take long.
+      </p>
     </div>;
   }
 };

@@ -9,12 +9,36 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 import { AuthCredentialsValidator, TAuthCredentialsValidator } from "@/lib/validators";
 import { trpc } from "@/trpc/client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
 const Page = () => {
   
-  const {mutate, isLoading} = trpc.auth.createPayloadUser.useMutation({})
+  const router = useRouter();
+
+  const {mutate, isLoading} = trpc.auth.createPayloadUser.useMutation({
+    onError: (err) => {
+      if(err.data?.code === "CONFLICT"){
+        toast.error("This email is already in use. Sign in instead?")
+        return;
+      }
+
+      if(err instanceof ZodError){
+        toast.error(err.issues[0].message);
+        return;
+      }
+
+      toast.error("Something went wrong. please try again.")
+    },
+
+    onSuccess:({sendToEmail}) => {
+      toast.success(`Verification email sent to ${sendToEmail}.}`)
+      router.push(`/verify-email?to`+ sendToEmail);
+    }
+  })
   
   const {
     register,
@@ -60,7 +84,7 @@ const Page = () => {
                     className={cn({
                       "focus-visible:ring-red-500": errors.email,
                     })}
-                    placeholder="you@example.com"
+                    placeholder="Enter your email"
                   />
                   {errors?.email && (
                     <p className="text-sm text-red-500">
@@ -77,7 +101,7 @@ const Page = () => {
                     className={cn({
                       "focus-visible:ring-red-500": errors.password,
                     })}
-                    placeholder="Password"
+                    placeholder="Enter your Password"
                   />
                   {errors?.password && (
                     <p className="text-sm text-red-500">
