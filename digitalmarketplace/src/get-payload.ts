@@ -1,12 +1,12 @@
-import dotenv from 'dotenv';
-import path from 'path';
-import payload, { Payload } from 'payload';
-import { InitOptions } from 'payload/config';
-import nodemailer from 'nodemailer';
+import dotenv from "dotenv";
+import path from "path";
+import payload, { Payload } from "payload";
+import { InitOptions } from "payload/config";
+import nodemailer from "nodemailer";
 
 dotenv.config({
-    path: path.resolve(__dirname, '../.env')
-})
+  path: path.resolve(__dirname, "../.env"),
+});
 
 const transporter = nodemailer.createTransport({
   host: "smtp.resend.com",
@@ -19,15 +19,15 @@ const transporter = nodemailer.createTransport({
 });
 
 let cached = (global as any).payload;
-if(!cached){
-    cached = (global as any).payload = {
-        client: null,
-        promise: null
-    };
+if (!cached) {
+  cached = (global as any).payload = {
+    client: null,
+    promise: null,
+  };
 }
 
 interface Args {
-    initOptions?: Partial<InitOptions>
+  initOptions?: Partial<InitOptions>;
 }
 
 export const getPayloadClient = async ({
@@ -45,7 +45,7 @@ export const getPayloadClient = async ({
     cached.promise = payload.init({
       email: {
         transport: transporter,
-        fromAddress: "shashank.maheshwari245@gmail.com",
+        fromAddress: "onboarding@resend.dev",
         fromName: "Digital Hippo",
       },
       secret: process.env.PAYLOAD_SECRET,
