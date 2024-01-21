@@ -25,8 +25,8 @@ const Page = () => {
   const origin = searchParams.get("origin");
   const { mutate, isLoading } = trpc.auth.signIn.useMutation({
     onError: (err) => {
-      if (err.data?.code === "CONFLICT") {
-        toast.error("This email is already in use. Sign in instead?");
+      if (err.data?.code === "UNAUTHORIZED") {
+        toast.error("Invalid email or password ");
         return;
       }
 
@@ -38,9 +38,20 @@ const Page = () => {
       toast.error("Something went wrong. please try again.");
     },
 
-    onSuccess: ({}) => {
-      toast.success(`Sign In Successfull..!!`);
-      router.refresh()
+    onSuccess: () => {
+      toast.success(`Signed In Successfully..!!`);
+      router.refresh();
+
+      if (origin) {
+        router.push(`/${origin}`);
+        return;
+      }
+
+      if (isSeller) {
+        router.push(`/sell}`);
+        return;
+      }
+      router.push("/");
     },
   });
 
@@ -52,8 +63,16 @@ const Page = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   });
 
-  const signUp = ({ email, password }: TAuthCredentialsValidator) => {
+  const signIn = ({ email, password }: TAuthCredentialsValidator) => {
     mutate({ email, password });
+  };
+
+  const continueAsCustomer = () => {
+    router.push(`/`, undefined);
+  };
+
+  const continueAsSeller = () => {
+    router.push(`?as=seller`);
   };
 
   return (
@@ -63,7 +82,7 @@ const Page = () => {
           <div className="flex flex-col items-center space-y-2 text-center">
             <Icons.logo className="h-20 w-20" />
             <h1 className="text-2xl font-semibold tracking-tight">
-              Sign in to your account
+              Sign in to your {isSeller ? `seller` : `customer`} account
             </h1>
 
             <Link
@@ -79,7 +98,7 @@ const Page = () => {
           </div>
 
           <div className="grid gap-6">
-            <form onSubmit={handleSubmit(signUp)}>
+            <form onSubmit={handleSubmit(signIn)}>
               <div className="grid gap-2">
                 <div className="grid gap-1 py-2">
                   <Label htmlFor="email">Email</Label>
@@ -127,6 +146,23 @@ const Page = () => {
                 </span>
               </div>
             </div>
+            {isSeller ? (
+              <Button
+                variant="secondary"
+                onClick={continueAsCustomer}
+                disabled={isLoading}
+              >
+                Continue as Customer
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                onClick={continueAsSeller}
+                disabled={isLoading}
+              >
+                Continue as Seller
+              </Button>
+            )}
           </div>
         </div>
       </div>
