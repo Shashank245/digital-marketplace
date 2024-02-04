@@ -1,5 +1,6 @@
+import { PRODUCT_CATEGORIES } from "../../../configs";
 import { CollectionConfig } from "payload/types";
-import { PRODUCT_CATEGORIES } from "@/configs";
+
 export const Products: CollectionConfig = {
   slug: "products",
   admin: {
