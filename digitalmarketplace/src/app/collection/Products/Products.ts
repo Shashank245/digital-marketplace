@@ -70,44 +70,44 @@ export const Products: CollectionConfig = {
       ],
     },
     {
-        name: "priceId",
-        type: "text",
-        admin: {hidden: true},
-        access: {
+      name: "priceId",
+      type: "text",
+      admin: { hidden: true },
+      access: {
         create: () => false,
         update: () => false,
-        read: () => false
+        read: () => false,
       },
     },
     {
-        name: "stripeId",
-        type: "text",
-        admin: {hidden: true},
-        access: {
+      name: "stripeId",
+      type: "text",
+      admin: { hidden: true },
+      access: {
         create: () => false,
         update: () => false,
-        read: () => false
+        read: () => false,
       },
     },
     {
-        name: "images",
-        type: "array",
-        label: "Product Images",
-        minRows: 1,
-        maxRows: 4,
-        required: true,
-        labels: {
-            singular: "Image",
-            plural: "Images"
+      name: "images",
+      type: "array",
+      label: "Product Images",
+      minRows: 1,
+      maxRows: 4,
+      required: true,
+      labels: {
+        singular: "Image",
+        plural: "Images",
+      },
+      fields: [
+        {
+          name: "image",
+          type: "upload",
+          relationTo: "media",
+          required: true,
         },
-        fields : [
-            {
-                name: "image",
-                type: "upload",
-                relationTo: "media",
-                required: true
-            }
-        ]
+      ],
     },
     {
       name: "product_files",
