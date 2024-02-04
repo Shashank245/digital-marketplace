@@ -5,13 +5,14 @@ import path from "path";
 import { buildConfig } from "payload/config";
 import { Users } from "./app/collection/Users";
 import dotenv from "dotenv";
+import { Products } from "./app/collection/Products/Products";
 
 dotenv.config({
   path: path.resolve(__dirname, "../.env"),
 });
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || "",
-  collections: [Users],
+  collections: [Users, Products],
   routes: {
     admin: '/sell'
   },

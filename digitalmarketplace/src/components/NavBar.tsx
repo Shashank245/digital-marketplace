@@ -45,13 +45,15 @@ const Navbar = async () => {
                   )}
 
                   {user ? (
-                    <p><UserAccountNav collection={""} email={""} id={""}/></p>
+                    <UserAccountNav user={user}/>
                   ) : (
                     <Link
-                      href="/sign-in"
-                      className={buttonVariants({ variant: "ghost" })}
+                      href="/sign-up"
+                      className={buttonVariants({
+                        variant: "ghost",
+                      })}
                     >
-                      Create Account
+                      Create account
                     </Link>
                   )}
 
@@ -69,7 +71,7 @@ const Navbar = async () => {
                   )}
 
                   <div className="ml-4 flow-root lg:ml-6">
-                      <Cart/>
+                    <Cart />
                   </div>
                 </div>
               </div>
