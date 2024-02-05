@@ -12,6 +12,7 @@ export interface Config {
     products: Product;
     media: Media;
     product_files: ProductFile;
+    orders: Order;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -47,6 +48,7 @@ export interface Product {
     image: string | Media;
     id?: string | null;
   }[];
+  product_files: string | ProductFile;
   updatedAt: string;
   createdAt: string;
 }
@@ -99,6 +101,14 @@ export interface ProductFile {
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
+}
+export interface Order {
+  id: string;
+  _isPaid: boolean;
+  user: string | User;
+  products: string | Product;
+  updatedAt: string;
+  createdAt: string;
 }
 export interface PayloadPreference {
   id: string;

@@ -12,7 +12,7 @@ const yourOwnAndPurchased: Access = async ({ req }) => {
   if (user?.role === "admin") return true;
   if (!user) return false;
 
-  const {docs: products} = await req.payload.find({
+  const { docs: products } = await req.payload.find({
     collection: "products",
     depth: 0,
     where: {
@@ -22,7 +22,20 @@ const yourOwnAndPurchased: Access = async ({ req }) => {
     },
   });
 
-  const ownProductIds = products.map((prod) => prod.product_files)
+  const ownProductIds = products.map((prod) => prod.product_files).flat();
+  const { docs: orders } = await req.payload.find({
+    collection: "orders",
+    depth: 2,
+    where: {
+      user: {
+        equals: user.id,
+      },
+    },
+  });
+
+  orders.map((order) => {
+    return;
+  });
 };
 
 export const ProductFiles: CollectionConfig = {
