@@ -110,13 +110,13 @@ export const Products: CollectionConfig = {
         },
       ],
     },
-    {
-      name: "product_files",
-      label: "Product File(s)",
-      required: true,
-      type: "relationship",
-      relationTo: "product_files",
-      hasMany: false,
-    },
+    // {
+    //   name: "product_files",
+    //   label: "Product File(s)",
+    //   required: true,
+    //   type: "relationship",
+    //   relationTo: "product_files",
+    //   hasMany: false,
+    // },
   ],
 };
