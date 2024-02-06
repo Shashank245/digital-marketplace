@@ -1,18 +1,20 @@
-import { User } from "payload/dist/auth";
+import { User } from "@/payload-types";
 import { Access, CollectionConfig } from "payload/types";
 
-const isAdminOrHasAccesstoImages = (): Access => async ({
-    req
-}) => {
+const isAdminOrHasAccessToImages =
+  (): Access =>
+  async ({ req }) => {
     const user = req.user as User | undefined;
-    if(!user) return false;
-    if(user.role === "admin") return true;
+
+    if (!user) return false;
+    if (user.role === "admin") return true;
+
     return {
-        user: {
-            equals: req.user.id, 
-        },
-    }
-};
+      user: {
+        equals: req.user.id,
+      },
+    };
+  };
 
 export const Media: CollectionConfig = {
   slug: "media",
@@ -23,23 +25,25 @@ export const Media: CollectionConfig = {
       },
     ],
   },
-  admin: {
-    hidden: ({ user }) => user.role !== "admin",
-  },
   access: {
     read: async ({ req }) => {
       const referer = req.headers.referer;
+
       if (!req.user || !referer?.includes("sell")) {
         return true;
       }
-      return await isAdminOrHasAccesstoImages()({ req });
+
+      return await isAdminOrHasAccessToImages()({ req });
     },
-    delete: isAdminOrHasAccesstoImages(),
-    update: isAdminOrHasAccesstoImages()
+    delete: isAdminOrHasAccessToImages(),
+    update: isAdminOrHasAccessToImages(),
+  },
+  admin: {
+    hidden: ({ user }) => user.role !== "admin",
   },
   upload: {
-    staticDir: "/media",
-    staticURL: "",
+    staticURL: "/media",
+    staticDir: "media",
     imageSizes: [
       {
         name: "thumbnail",
@@ -49,13 +53,13 @@ export const Media: CollectionConfig = {
       },
       {
         name: "card",
-        width: 769,
+        width: 768,
         height: 1024,
         position: "centre",
       },
       {
         name: "tablet",
-        width: 124,
+        width: 1024,
         height: undefined,
         position: "centre",
       },

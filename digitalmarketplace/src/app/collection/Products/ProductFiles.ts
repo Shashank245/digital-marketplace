@@ -9,6 +9,7 @@ const addUser: BeforeChangeHook = ({ req, data }) => {
 
 const yourOwnAndPurchased: Access = async ({ req }) => {
   const user = req.user as User | null;
+
   if (user?.role === "admin") return true;
   if (!user) return false;
 
@@ -22,7 +23,8 @@ const yourOwnAndPurchased: Access = async ({ req }) => {
     },
   });
 
-  const ownProductIds = products.map((prod) => prod.product_files).flat();
+  const ownProductFileIds = products.map((prod) => prod.product_files).flat();
+
   const { docs: orders } = await req.payload.find({
     collection: "orders",
     depth: 2,
@@ -33,9 +35,27 @@ const yourOwnAndPurchased: Access = async ({ req }) => {
     },
   });
 
-  orders.map((order) => {
-    return;
-  });
+  const purchasedProductFileIds = orders
+    .map((order) => {
+      return order.products.map((product) => {
+        if (typeof product === "string")
+          return req.payload.logger.error(
+            "Search depth not sufficient to find purchased file IDs"
+          );
+
+        return typeof product.product_files === "string"
+          ? product.product_files
+          : product.product_files.id;
+      });
+    })
+    .filter(Boolean)
+    .flat();
+
+  return {
+    id: {
+      in: [...ownProductFileIds, ...purchasedProductFileIds],
+    },
+  };
 };
 
 export const ProductFiles: CollectionConfig = {
@@ -48,10 +68,12 @@ export const ProductFiles: CollectionConfig = {
   },
   access: {
     read: yourOwnAndPurchased,
+    update: ({ req }) => req.user.role === "admin",
+    delete: ({ req }) => req.user.role === "admin",
   },
   upload: {
-    staticDir: "/product_files",
-    staticURL: "product_files",
+    staticURL: "/product_files",
+    staticDir: "product_files",
     mimeTypes: ["image/*", "font/*", "application/postscript"],
   },
   fields: [
@@ -59,11 +81,11 @@ export const ProductFiles: CollectionConfig = {
       name: "user",
       type: "relationship",
       relationTo: "users",
-      required: true,
-      hasMany: false,
       admin: {
         condition: () => false,
       },
+      hasMany: false,
+      required: true,
     },
   ],
 };
