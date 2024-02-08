@@ -1,13 +1,25 @@
+'use_client'
 import Link from "next/link";
-
+import { trpc } from "@/trpc/client";
+import { TQueryValidator } from "@/lib/QueryValidator";
 interface ProductReelProps {
   title: string;
   subtitle?: string;
   href?: string;
+  query: TQueryValidator;
 }
-const ProductReel = (props: ProductReelProps) => {
-  const { title, subtitle, href } = props;
 
+const FALLBACK_LIMIT = 4;
+
+const ProductReel = (props: ProductReelProps) => {
+  const { title, subtitle, href, query } = props;
+  const {} = trpc.getInfiniteProducts.useInfiniteQuery({
+    limit: query.limit ?? FALLBACK_LIMIT,
+    query
+  }, {
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+
+  });
   return (
     <section className="py-12">
       <div className="md:flex md:items-center md:justify-between mb-4">
@@ -26,10 +38,14 @@ const ProductReel = (props: ProductReelProps) => {
             className="hidden text-sm font-medium text-blue-600 hover:text-blue-500 md:block"
             href={href}
           >
-            Shop the collection{' '}
-          <span aria-hidden="true">&rarr;</span>
+            Shop the collection <span aria-hidden="true">&rarr;</span>
           </Link>
         ) : null}
+        <div className="relative">
+          <div className="mt-6 flex items-center w-full">
+            <div className="w-full grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:gap-y-10 md:grid-cols-4 lg:gap-x-8"></div>
+          </div>
+        </div>
       </div>
     </section>
   );
