@@ -1,5 +1,8 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
+import "swiper/css";
+import "swiper/css/pagination";
+
 interface ImageSlierProps {
   urls: string[];
 }
