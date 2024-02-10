@@ -1,8 +1,26 @@
-'use_client'
+"use client";
 import Link from "next/link";
 import { trpc } from "@/trpc/client";
-import { TQueryValidator } from "@/lib/QueryValidator";
+import { TQueryValidator } from "../lib/QueryValidator";
+import { Media, Product, ProductFile, User } from "@/payload-types";
+import ProductListing from "./ProductListing";
 interface ProductReelProps {
+  id: string;
+  user?: (string | null) | User;
+  name: string;
+  description?: string | null;
+  price: number;
+  categories: "ui_kits" | "icons";
+  approvedForSale: "pending" | "approved" | "denied";
+  priceId?: string | null;
+  stripeId?: string | null;
+  images: {
+    image: string | Media;
+    id?: string | null;
+  }[];
+  product_files: string | ProductFile;
+  updatedAt: string;
+  createdAt: string;
   title: string;
   subtitle?: string;
   href?: string;
@@ -13,13 +31,25 @@ const FALLBACK_LIMIT = 4;
 
 const ProductReel = (props: ProductReelProps) => {
   const { title, subtitle, href, query } = props;
-  const {} = trpc.getInfiniteProducts.useInfiniteQuery({
-    limit: query.limit ?? FALLBACK_LIMIT,
-    query
-  }, {
-    getNextPageParam: (lastPage) => lastPage.nextPage,
+  const { data: queryResults, isLoading } =
+    trpc.getInfiniteProducts.useInfiniteQuery(
+      {
+        limit: query.limit ?? FALLBACK_LIMIT,
+        query,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextPage,
+      }
+    );
+  const products = queryResults?.pages.flatMap((page) => page.items);
+  let productMappings: (Product | null)[] = [];
 
-  });
+  if (products && products.length) {
+    productMappings = products;
+  } else if (isLoading) {
+    productMappings = new Array<null>(query.limit ?? FALLBACK_LIMIT).fill(null);
+  }
+
   return (
     <section className="py-12">
       <div className="md:flex md:items-center md:justify-between mb-4">
@@ -43,7 +73,12 @@ const ProductReel = (props: ProductReelProps) => {
         ) : null}
         <div className="relative">
           <div className="mt-6 flex items-center w-full">
-            <div className="w-full grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:gap-y-10 md:grid-cols-4 lg:gap-x-8"></div>
+            <div className="w-full grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:gap-y-10 md:grid-cols-4 lg:gap-x-8">
+              {productMappings.map((product, i) => (
+                <ProductListing
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { QueryValidator } from "@/lib/QueryValidator";
+import { QueryValidator } from "../lib/QueryValidator";
 import authRouter from "./auth-router";
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
