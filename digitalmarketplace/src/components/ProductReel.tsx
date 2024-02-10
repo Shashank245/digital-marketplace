@@ -2,25 +2,9 @@
 import Link from "next/link";
 import { trpc } from "@/trpc/client";
 import { TQueryValidator } from "../lib/QueryValidator";
-import { Media, Product, ProductFile, User } from "@/payload-types";
+import { Product } from "@/payload-types";
 import ProductListing from "./ProductListing";
 interface ProductReelProps {
-  id: string;
-  user?: (string | null) | User;
-  name: string;
-  description?: string | null;
-  price: number;
-  categories: "ui_kits" | "icons";
-  approvedForSale: "pending" | "approved" | "denied";
-  priceId?: string | null;
-  stripeId?: string | null;
-  images: {
-    image: string | Media;
-    id?: string | null;
-  }[];
-  product_files: string | ProductFile;
-  updatedAt: string;
-  createdAt: string;
   title: string;
   subtitle?: string;
   href?: string;
@@ -75,8 +59,7 @@ const ProductReel = (props: ProductReelProps) => {
           <div className="mt-6 flex items-center w-full">
             <div className="w-full grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:gap-y-10 md:grid-cols-4 lg:gap-x-8">
               {productMappings.map((product, i) => (
-                <ProductListing
-                />
+                <ProductListing key={i} product={product} index={i} />
               ))}
             </div>
           </div>
