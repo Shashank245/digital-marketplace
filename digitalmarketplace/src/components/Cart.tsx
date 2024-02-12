@@ -17,10 +17,11 @@ import Image from "next/image";
 import { useCart } from "@/hooks/use-cart";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import CartItem from "./CartItem";
-
+import { useEffect, useState } from "react";
 
 const Cart = () => {
   const { items } = useCart();
+  const [isMounted, setIsMounted] = useState<Boolean>(false);
   const fee = 1;
   const itemCount = items.length;
   const cartTotal = items.reduce(
@@ -28,6 +29,9 @@ const Cart = () => {
     0
   );
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   return (
     <Sheet>
       <SheetTrigger className="group -m-2 flex items-center p-2">
@@ -36,12 +40,12 @@ const Cart = () => {
           className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
         />
         <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-          0
+          {isMounted ? (itemCount) : (0)}
         </span>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
         <SheetHeader className="space-y-2.5 pr-6">
-          <SheetTitle>Cart(0)</SheetTitle>
+          <SheetTitle>Cart({itemCount})</SheetTitle>
         </SheetHeader>
 
         {itemCount > 0 ? (
