@@ -7,6 +7,7 @@ import { Check, Shield } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ProductReel from "@/components/ProductReel";
+import AddToCartButton from "@/components/AddToCartButton";
 
 interface PageProps {
   params: {
@@ -113,7 +114,7 @@ const Page = async ({ params }: PageProps) => {
           </div>
           <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
             <div>
-              <div className="mt-10">Add to Cart</div>
+              <div className="mt-10"><AddToCartButton/></div>
               <div className="mt-6 text-center">
                 <div className="group inline-flex text-sm text-medium">
                   <Shield
@@ -132,7 +133,7 @@ const Page = async ({ params }: PageProps) => {
       <ProductReel
         href="/products"
         subtitle={`Browse Similar high-quality ${label} just like ${product.name}`}
-        query={{ category: product.categories, limit: 4 }}
+        query={{ sort: "desc", limit: 5 }}
         title={`Similar ${label}`}
       />
     </MaxWidthWrapper>
