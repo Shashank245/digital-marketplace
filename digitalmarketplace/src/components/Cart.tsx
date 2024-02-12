@@ -14,9 +14,19 @@ import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import Image from "next/image";
+import { useCart } from "@/hooks/use-cart";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import CartItem from "./CartItem";
+
 
 const Cart = () => {
-  const itemCount = 0;
+  const { items } = useCart();
+  const fee = 1;
+  const itemCount = items.length;
+  const cartTotal = items.reduce(
+    (total, { product }) => total + product.price,
+    0
+  );
 
   return (
     <Sheet>
@@ -36,7 +46,13 @@ const Cart = () => {
 
         {itemCount > 0 ? (
           <>
-            <div className="flex w-full flex-col pr-6">cart items</div>
+            <div className="flex w-full flex-col pr-6">
+              <ScrollArea>
+                {items.map(({ product }) => (
+                  <CartItem product={product} key={product.id} />
+                ))}
+              </ScrollArea>
+            </div>
             <div className="space-y-4 pr-6">
               <Separator />
               <div className="space-y-1.5 text-sm">
@@ -47,12 +63,12 @@ const Cart = () => {
 
                 <div className="flex">
                   <span className="flex-1">Transaction Fee</span>
-                  <span>{formatPrice(1)}</span>
+                  <span>{formatPrice(fee)}</span>
                 </div>
 
                 <div className="flex">
                   <span className="flex-1">Total</span>
-                  <span>{formatPrice(1)}</span>
+                  <span>{formatPrice(cartTotal + fee)}</span>
                 </div>
               </div>
 
@@ -88,12 +104,12 @@ const Cart = () => {
               <Link
                 href="/products"
                 className={buttonVariants({
-                  variant: 'link',
-                  size: 'sm',
-                  className: 'text-sm text-muted-foreground',
+                  variant: "link",
+                  size: "sm",
+                  className: "text-sm text-muted-foreground",
                 })}
               >
-                Add Items in cart to checkout 
+                Add Items in cart to checkout
               </Link>
             </SheetTrigger>
           </div>
