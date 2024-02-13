@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PRODUCT_CATEGORIES } from "@/configs";
 import { useCart } from "@/hooks/use-cart";
 import { cn, formatPrice } from "@/lib/utils";
+import { trpc } from "@/trpc/client";
 import { Check, Loader2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,15 +12,21 @@ import { useEffect, useState } from "react";
 const Page = () => {
   const { items, removeItem } = useCart();
   const fee = 1;
+
+
   const cartTotal = items.reduce(
     (total, { product }) => total + product.price,
     0
   );
+
   const [isMounted, setIsMounted] = useState<Boolean>(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  function createCheckoutSession(arg0: { productIds: any; }) {
+
+  const productIds = items.map(({product}) => product.id);
+
+  function createCheckoutSession(arg0: { productIds: any }) {
     throw new Error("Function not implemented.");
   }
 
@@ -179,9 +186,9 @@ const Page = () => {
                 }}
                 size="lg"
               >
-                {isLoading ? (
+                {/* {isLoading ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
-                ) : null}
+                ) : null} */}
                 Checkout
               </Button>
             </div>

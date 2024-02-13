@@ -4,9 +4,11 @@ import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import { getPayloadClient } from "../get-payload";
 import { M_PLUS_1 } from "next/font/google";
+import { paymenRouter } from "./payment-router";
 
 export const approuter = router({
   auth: authRouter,
+  payment: paymenRouter,
   getInfiniteProducts: publicProcedure
     .input(
       z.object({
