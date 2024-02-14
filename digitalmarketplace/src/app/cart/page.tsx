@@ -188,6 +188,7 @@ const Page = () => {
             </div>
             <div className="mt-6">
               <Button
+                disabled = {items.length === 0 || isLoading}
                 className="w-full"
                 onClick={() => {
                   createCheckoutSession({ productIds });
