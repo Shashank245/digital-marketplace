@@ -11,8 +11,6 @@ export const paymenRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
       let { productIds } = input;
-      console.log(productIds);
-
       const payload = await getPayloadClient();
       const { docs: products } = await payload.find({
         collection: "products",
@@ -28,14 +26,14 @@ export const paymenRouter = router({
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
       lineItems.push({
-        price: "price_1OjWabSAFZQpdzjbKtTbPxmW",
+        price: "price_1OjWabSAFZQpdzjbKtTbPxmW", // Use the correct price ID here
         quantity: 1,
         adjustable_quantity: { enabled: false },
       });
 
       filteredProducts.forEach((product) => {
         lineItems.push({
-          price: product.priceId!,
+          price: product.priceId!, // Make sure priceId is the correct property
           quantity: 1,
         });
       });
@@ -59,7 +57,12 @@ export const paymenRouter = router({
             userId: user.id,
             orderId: order.id,
           },
-          line_items: lineItems,
+          line_items: [
+            {
+              price: "price_1OjWabSAFZQpdzjbKtTbPxmW",
+              quantity: 1,
+            },
+          ],
         });
         return { url: stripeSession.url };
       } catch (err) {
