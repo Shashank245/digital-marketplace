@@ -67,7 +67,7 @@ export const paymenRouter = router({
         });
         return { url: stripeSession.url };
       } catch (err) {
-        return;{url: null}
+        return {url: null}
       }
     }),
 });
