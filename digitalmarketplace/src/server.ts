@@ -22,6 +22,7 @@ const start = async() => {
         router: approuter,
         createContext
     }))
+    app.use(express.json());
     app.use((req, res) => nextHandler(req, res));
     nextApp.prepare().then(() => {
         payload.logger.info(
@@ -31,6 +32,12 @@ const start = async() => {
          payload.logger.info(`Next.js App URL: ${process.env.NEXT_PUBLIC_SERVER_URL}`);   
         })
     })
+    app.use((req, res, next) => {
+      if (req.body && Buffer.isBuffer(req.body)) {
+        req.body = req.body.toString();
+      }
+      next();
+    });
 }
 
 start()

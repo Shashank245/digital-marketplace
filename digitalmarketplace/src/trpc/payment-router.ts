@@ -11,12 +11,8 @@ export const paymenRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { user } = ctx;
       let { productIds } = input;
+      console.log(productIds);
 
-      if (productIds.length !== 0) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-        });
-      }
       const payload = await getPayloadClient();
       const { docs: products } = await payload.find({
         collection: "products",
@@ -37,9 +33,9 @@ export const paymenRouter = router({
         adjustable_quantity: { enabled: false },
       });
 
-      filteredProducts.forEach((prod) => {
+      filteredProducts.forEach((product) => {
         lineItems.push({
-          price: prod.priceId!,
+          price: product.priceId!,
           quantity: 1,
         });
       });
@@ -55,7 +51,7 @@ export const paymenRouter = router({
 
       try {
         const stripeSession = await stripe.checkout.sessions.create({
-          success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thankyou?orderid=${order.id}`,
+          success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderid=${order.id}`,
           cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/cart`,
           payment_method_types: ["card", "paypal"],
           mode: "payment",
@@ -67,7 +63,8 @@ export const paymenRouter = router({
         });
         return { url: stripeSession.url };
       } catch (err) {
-        return {url: null}
+        console.error("Error creating Stripe session:", err);
+        return { url: null };
       }
     }),
 });
