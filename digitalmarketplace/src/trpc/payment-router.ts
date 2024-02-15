@@ -51,8 +51,8 @@ export const paymenRouter = router({
         const stripeSession = await stripe.checkout.sessions.create({
           success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderid=${order.id}`,
           cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/cart`,
-          payment_method_types: ["card", "paypal"],
-          mode: "payment",
+          payment_method_types: ["card"],
+          mode: "subscription",
           metadata: {
             userId: user.id,
             orderId: order.id,
