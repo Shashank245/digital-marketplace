@@ -1,8 +1,9 @@
+import PaymentStatus from "@/components/PaymentStatus";
 import { PRODUCT_CATEGORIES } from "@/configs";
 import { getPayloadClient } from "@/get-payload";
 import { getServerSideUser } from "@/lib/payload-utils";
 import { formatPrice } from "@/lib/utils";
-import { Product, ProductFile } from "@/payload-types";
+import { Product, ProductFile, User } from "@/payload-types";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,13 +15,20 @@ interface PageProps {
   };
 }
 const ThankyouPage = async ({ searchParams }: PageProps) => {
-  const orderId = searchParams.orderId;
+  const orderId = searchParams?.orderid;
+
+  if (orderId !== undefined) {
+    console.log(orderId);
+  } else {
+    console.error("Order ID is undefined");
+  }
+
   const nextCookies = cookies();
 
   const { user } = await getServerSideUser(nextCookies);
-  
+
   const payload = await getPayloadClient();
-  
+
   const { docs: orders } = await payload.find({
     collection: "orders",
     depth: 2,
@@ -34,9 +42,10 @@ const ThankyouPage = async ({ searchParams }: PageProps) => {
   const [order] = orders;
 
   if (!order) return notFound();
-  
-  const orderUserId = typeof order.user === "string" ? order.user : order.user.id;
-  
+
+  const orderUserId =
+    typeof order.user === "string" ? order.user : order.user.id;
+
   if (orderUserId !== user?.id) {
     return redirect(`/sign-in?origin=thank-you?orderid=${orderId}`);
   }
@@ -46,7 +55,7 @@ const ThankyouPage = async ({ searchParams }: PageProps) => {
   const orderTotal = products.reduce((total, product) => {
     return total + product.price;
   }, 0);
-  
+
   return (
     <main className="relative lg:min-h-full">
       <div className="hidden lg:block h-80 overflow-hidden lg:absolute lg:h-full lg:w-1/2 lg:pr-4 xl:pr-12">
@@ -147,7 +156,11 @@ const ThankyouPage = async ({ searchParams }: PageProps) => {
                   <p className="text-base">{formatPrice(orderTotal + 1)}</p>
                 </div>
               </div>
-
+              <PaymentStatus
+                orderEmail={(order.user as User).email}
+                orderId={order.id}
+                isPaid={order._isPaid}
+              />
               <div className="mt-16 border-t border-gray-200 py-6 text-right">
                 <Link
                   href="/products"
