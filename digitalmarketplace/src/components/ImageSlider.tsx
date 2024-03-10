@@ -85,7 +85,7 @@ const ImageSlider = ({ urls }: ImageSlierProps) => {
           {urls.map((url, i) => (
             <SwiperSlide key={i} className="-z-10 w-full h-full relative">
               <Image
-                src=" https://digital-marketplace-production-dc8f.up.railway.app/media/Burberry UI.jpeg"
+                src={url}
                 alt=""
                 fill
                 loading="eager"
