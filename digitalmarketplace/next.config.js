@@ -1,9 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "localhost",
-      "digital-marketplace-production-dc8f.up.railway.app",
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "digital-marketplace-production-dc8f.up.railway.app",
+      },
     ],
   },
 };
