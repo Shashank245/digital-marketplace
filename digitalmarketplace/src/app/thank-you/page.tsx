@@ -18,7 +18,7 @@ const ThankyouPage = async ({ searchParams }: PageProps) => {
   const orderId = searchParams?.orderid;
 
   if (orderId !== undefined) {
-    console.log(orderId);
+    console.log("");
   } else {
     console.error("Order ID is undefined");
   }

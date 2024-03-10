@@ -30,7 +30,7 @@ const VerifyEmail = ({ token }: VerifyEmailProps) => {
       <div className="relative mb-4 h-60 w-60 text-muted-foreground">
         <Image src="/hippo-email-sent.png" fill alt="The email was sent" />
       </div>
-      <h3 className="font-semibold text-2xl"> You're all set </h3>
+      <h3 className="font-semibold text-2xl"> You&apos;re all set </h3>
       <p className="text-muted-foreground text-center mt-1">
         Thank you for verifying the email
       </p>
@@ -45,7 +45,7 @@ const VerifyEmail = ({ token }: VerifyEmailProps) => {
       <Loader2 />
       <h3 className="font-semibold text-2xl">Verifying... </h3>
       <p className="text-muted-foreground text-center mt-1">
-        This won't take long.
+        This won&apos;t take long.
       </p>
     </div>;
   }
