@@ -85,7 +85,7 @@ const ImageSlider = ({ urls }: ImageSlierProps) => {
           {urls.map((url, i) => (
             <SwiperSlide key={i} className="-z-10 w-full h-full relative">
               <Image
-                src='/checkout-thank-you.jpg'
+                src="https://images.unsplash.com/photo-1464375117522-1311d6a5b81f?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=2250&q=80"
                 alt=""
                 fill
                 loading="eager"
