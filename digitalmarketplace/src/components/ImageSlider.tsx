@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
@@ -82,17 +82,25 @@ const ImageSlider = ({ urls }: ImageSlierProps) => {
           slidesPerView={1}
           className="h-full w-full"
         >
-          {urls.map((url, i) => (
-            <SwiperSlide key={i} className="-z-10 w-full h-full relative">
-              <Image
-                src="/thumbnail.jpg"
-                alt=""
-                fill
-                loading="eager"
-                className="-z-10 w-full h-full object-cover object-center"
-              />
-            </SwiperSlide>
-          ))}
+          {urls.map((url, i) => {
+            const filename = url.substring(url.lastIndexOf("/") + 1);
+            const [name, extension] = filename.split(".");
+            const newSrc = `/${name}.${extension}`;
+            return (
+              <SwiperSlide key={i} className="-z-10 w-full h-full relative">
+                <Image
+                  src={newSrc}
+                  alt=""
+                  fill
+                  loading="eager"
+                  className="-z-10 w-full h-full object-cover object-center"
+                />
+                {/* Use 'name' and 'extension' as needed */}
+                <p>Name: {name}</p>
+                <p>Extension: {extension}</p>
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
       </div>
     </>
