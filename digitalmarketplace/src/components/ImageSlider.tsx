@@ -95,9 +95,7 @@ const ImageSlider = ({ urls }: ImageSlierProps) => {
                   loading="eager"
                   className="-z-10 w-full h-full object-cover object-center"
                 />
-                {/* Use 'name' and 'extension' as needed */}
-                <p>Name: {name}</p>
-                <p>Extension: {extension}</p>
+               
               </SwiperSlide>
             );
           })}
