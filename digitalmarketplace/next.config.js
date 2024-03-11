@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "https://digital-marketplace-production-dc8f.up.railway.app",
+        hostname: "digital-marketplace-production-dc8f.up.railway.app",
         port: "",
       },
     ],
