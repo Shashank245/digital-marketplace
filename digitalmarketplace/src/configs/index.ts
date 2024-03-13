@@ -6,7 +6,7 @@ export const PRODUCT_CATEGORIES = [
       {
         name: "Editor picks",
         href: `/products?category=ui_kits`,
-        imageSrc: "/mixed.jpg",
+        imageSrc: "/nav/ui-kits/mixed.jpg",
       },
       {
         name: "New Arrivals",
