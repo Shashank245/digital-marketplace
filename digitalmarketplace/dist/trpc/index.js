@@ -57,38 +57,36 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.approuter = void 0;
 var QueryValidator_1 = require("../lib/QueryValidator");
-var auth_router_1 = __importDefault(require("./auth-router"));
+var auth_router_1 = require("./auth-router");
 var trpc_1 = require("./trpc");
 var zod_1 = require("zod");
 var get_payload_1 = require("../get-payload");
 var payment_router_1 = require("./payment-router");
 exports.approuter = (0, trpc_1.router)({
-    auth: auth_router_1.default,
-    payment: payment_router_1.paymenRouter,
+    auth: auth_router_1.authRouter,
+    payment: payment_router_1.paymentRouter,
     getInfiniteProducts: trpc_1.publicProcedure
         .input(zod_1.z.object({
         limit: zod_1.z.number().min(1).max(100),
         cursor: zod_1.z.number().nullish(),
         query: QueryValidator_1.QueryValidator,
+        categoryDynamic: zod_1.z.string().optional(),
     }))
         .query(function (_a) {
         var input = _a.input;
         return __awaiter(void 0, void 0, void 0, function () {
-            var query, cursor, sort, limit, queryOpts, payload, parsedQueryOptions, page, _b, items, hasNextPage, nextPage;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var query, cursor, categoryDynamic, sort, limit, queryOpts, payload, parsedQueryOptions, page, _b, items, hasNextPage, nextPage, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
-                        query = input.query, cursor = input.cursor;
+                        query = input.query, cursor = input.cursor, categoryDynamic = input.categoryDynamic;
                         sort = query.sort, limit = query.limit, queryOpts = __rest(query, ["sort", "limit"]);
                         return [4 /*yield*/, (0, get_payload_1.getPayloadClient)()];
                     case 1:
-                        payload = _c.sent();
+                        payload = _d.sent();
                         parsedQueryOptions = {};
                         Object.entries(queryOpts).forEach(function (_a) {
                             var key = _a[0], value = _a[1];
@@ -97,10 +95,13 @@ exports.approuter = (0, trpc_1.router)({
                             };
                         });
                         page = cursor || 1;
+                        if (!(categoryDynamic !== undefined)) return [3 /*break*/, 3];
                         return [4 /*yield*/, payload.find({
                                 collection: "products",
                                 where: __assign({ approvedForSale: {
                                         equals: "approved",
+                                    }, categories: {
+                                        equals: categoryDynamic,
                                     } }, parsedQueryOptions),
                                 sort: sort,
                                 depth: 1,
@@ -108,7 +109,23 @@ exports.approuter = (0, trpc_1.router)({
                                 page: page,
                             })];
                     case 2:
-                        _b = _c.sent(), items = _b.docs, hasNextPage = _b.hasNextPage, nextPage = _b.nextPage;
+                        _c = _d.sent();
+                        return [3 /*break*/, 5];
+                    case 3: return [4 /*yield*/, payload.find({
+                            collection: "products",
+                            where: __assign({ approvedForSale: {
+                                    equals: "approved",
+                                } }, parsedQueryOptions),
+                            sort: sort,
+                            depth: 1,
+                            limit: limit,
+                            page: page,
+                        })];
+                    case 4:
+                        _c = _d.sent();
+                        _d.label = 5;
+                    case 5:
+                        _b = _c, items = _b.docs, hasNextPage = _b.hasNextPage, nextPage = _b.nextPage;
                         return [2 /*return*/, {
                                 items: items,
                                 nextPage: hasNextPage ? nextPage : null,

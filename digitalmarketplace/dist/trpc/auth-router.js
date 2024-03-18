@@ -36,12 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.authRouter = void 0;
 var validators_1 = require("../lib/validators");
 var trpc_1 = require("./trpc");
 var get_payload_1 = require("../get-payload");
 var server_1 = require("@trpc/server");
 var zod_1 = require("zod");
-var authRouter = (0, trpc_1.router)({
+exports.authRouter = (0, trpc_1.router)({
     createPayloadUser: trpc_1.publicProcedure
         .input(validators_1.AuthCredentialsValidator)
         .mutation(function (_a) {
@@ -77,15 +78,13 @@ var authRouter = (0, trpc_1.router)({
                             })];
                     case 3:
                         _b.sent();
-                        return [2 /*return*/, { success: true, sendToEmail: email }];
+                        return [2 /*return*/, { success: true, sentToEmail: email }];
                 }
             });
         });
     }),
     verifyEmail: trpc_1.publicProcedure
-        .input(zod_1.z.object({
-        token: zod_1.z.string(),
-    }))
+        .input(zod_1.z.object({ token: zod_1.z.string() }))
         .query(function (_a) {
         var input = _a.input;
         return __awaiter(void 0, void 0, void 0, function () {
@@ -94,16 +93,17 @@ var authRouter = (0, trpc_1.router)({
                 switch (_b.label) {
                     case 0:
                         token = input.token;
-                        payload = (0, get_payload_1.getPayloadClient)();
-                        return [4 /*yield*/, payload];
+                        return [4 /*yield*/, (0, get_payload_1.getPayloadClient)()];
                     case 1:
-                        isVerified = (_b.sent()).verifyEmail({
-                            collection: "users",
-                            token: token,
-                        });
-                        if (!isVerified) {
+                        payload = _b.sent();
+                        return [4 /*yield*/, payload.verifyEmail({
+                                collection: "users",
+                                token: token,
+                            })];
+                    case 2:
+                        isVerified = _b.sent();
+                        if (!isVerified)
                             throw new server_1.TRPCError({ code: "UNAUTHORIZED" });
-                        }
                         return [2 /*return*/, { success: true }];
                 }
             });
@@ -132,7 +132,7 @@ var authRouter = (0, trpc_1.router)({
                                     email: email,
                                     password: password,
                                 },
-                                res: res
+                                res: res,
                             })];
                     case 3:
                         _b.sent();
@@ -146,4 +146,3 @@ var authRouter = (0, trpc_1.router)({
         });
     }),
 });
-exports.default = authRouter;

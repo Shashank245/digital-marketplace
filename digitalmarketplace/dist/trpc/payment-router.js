@@ -36,13 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paymenRouter = void 0;
+exports.paymentRouter = void 0;
 var server_1 = require("@trpc/server");
 var trpc_1 = require("./trpc");
 var zod_1 = require("zod");
 var get_payload_1 = require("../get-payload");
 var stripe_1 = require("../lib/stripe");
-exports.paymenRouter = (0, trpc_1.router)({
+exports.paymentRouter = (0, trpc_1.router)({
     createSession: trpc_1.privateProcedure
         .input(zod_1.z.object({ productIds: zod_1.z.array(zod_1.z.string()) }))
         .mutation(function (_a) {
