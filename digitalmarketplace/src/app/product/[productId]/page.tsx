@@ -131,9 +131,10 @@ const Page = async ({ params }: PageProps) => {
         </div>
       </div>
       <ProductReel
+        categoryDynamic={product.categories}
         href="/products"
         subtitle={`Browse Similar high-quality ${label} just like ${product.name}`}
-        query={{ sort: "desc", limit: 5 }}
+        query={{sort: "desc", limit: 5 }}
         title={`Similar ${label}`}
       />
     </MaxWidthWrapper>

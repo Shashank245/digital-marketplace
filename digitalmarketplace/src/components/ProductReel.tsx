@@ -9,22 +9,35 @@ interface ProductReelProps {
   subtitle?: string;
   href?: string;
   query: TQueryValidator;
+  categoryDynamic?: string;
 }
 
 const FALLBACK_LIMIT = 4;
 
 const ProductReel = (props: ProductReelProps) => {
-  const { title, subtitle, href, query } = props;
+  const { title, subtitle, href, query, categoryDynamic } = props;
   const { data: queryResults, isLoading } =
-    trpc.getInfiniteProducts.useInfiniteQuery(
-      {
-        limit: query.limit ?? FALLBACK_LIMIT,
-        query,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextPage,
-      }
-    );
+    categoryDynamic !== undefined
+      ? trpc.getInfiniteProducts.useInfiniteQuery(
+          {
+            categoryDynamic,
+            limit: query.limit ?? FALLBACK_LIMIT,
+            query,
+          },
+          {
+            getNextPageParam: (lastPage) => lastPage.nextPage,
+          }
+        )
+      : trpc.getInfiniteProducts.useInfiniteQuery(
+          {
+            limit: query.limit ?? FALLBACK_LIMIT,
+            query,
+          },
+          {
+            getNextPageParam: (lastPage) => lastPage.nextPage,
+          }
+        );
+
   const products = queryResults?.pages.flatMap((page) => page.items);
   let productMappings: (Product | null)[] = [];
 
@@ -68,4 +81,5 @@ const ProductReel = (props: ProductReelProps) => {
     </section>
   );
 };
+
 export default ProductReel;

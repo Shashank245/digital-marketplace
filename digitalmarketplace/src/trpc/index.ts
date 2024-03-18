@@ -1,24 +1,24 @@
 import { QueryValidator } from "../lib/QueryValidator";
-import authRouter from "./auth-router";
+import {authRouter} from "./auth-router";
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import { getPayloadClient } from "../get-payload";
-import { M_PLUS_1 } from "next/font/google";
-import { paymenRouter } from "./payment-router";
+import { paymentRouter } from "./payment-router";
 
 export const approuter = router({
   auth: authRouter,
-  payment: paymenRouter,
+  payment: paymentRouter,
   getInfiniteProducts: publicProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100),
         cursor: z.number().nullish(),
         query: QueryValidator,
+        categoryDynamic: z.string().optional(),
       })
     )
     .query(async ({ input }) => {
-      const { query, cursor } = input;
+      const { query, cursor, categoryDynamic } = input;
       const { sort, limit, ...queryOpts } = query;
 
       const payload = await getPayloadClient();
@@ -36,19 +36,36 @@ export const approuter = router({
         docs: items,
         hasNextPage,
         nextPage,
-      } = await payload.find({
-        collection: "products",
-        where: {
-          approvedForSale: {
-            equals: "approved",
-          },
-          ...parsedQueryOptions,
-        },
-        sort,
-        depth: 1,
-        limit,
-        page,
-      });
+      } = categoryDynamic !== undefined
+        ? await payload.find({
+            collection: "products",
+            where: {
+              approvedForSale: {
+                equals: "approved",
+              },
+              categories: {
+                equals: categoryDynamic,
+              },
+              ...parsedQueryOptions,
+            },
+            sort,
+            depth: 1,
+            limit,
+            page,
+          })
+        : await payload.find({
+            collection: "products",
+            where: {
+              approvedForSale: {
+                equals: "approved",
+              },
+              ...parsedQueryOptions,
+            },
+            sort,
+            depth: 1,
+            limit,
+            page,
+          });
 
       return {
         items,
